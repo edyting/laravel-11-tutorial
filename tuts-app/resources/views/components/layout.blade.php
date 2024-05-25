@@ -12,7 +12,7 @@
 <body class="bg-slate-100">
    <header>
     <nav class="h-[5rem] flex items-center  justify-between px-12 bg-blue-900">
-        <a href="{{route('home')}}" class="text-4xl font-bold text-white">Home</a>
+        <a href="{{route('posts.index')}}" class="text-4xl font-bold text-white">Home</a>
 
         @auth
           <div class="relative grid place-items-center " x-data="{open:false}">
