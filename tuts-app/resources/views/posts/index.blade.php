@@ -5,5 +5,13 @@
 @endsection --}}
 
 <x-layout>
-    <h2>HEllo</h2>
+
+    @auth
+        <h1>Logged IN</h1>
+    @endauth
+
+    @guest
+        <h1>Guest</h1>   
+    @endguest
+
 </x-layout>
