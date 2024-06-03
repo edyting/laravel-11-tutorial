@@ -9,6 +9,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -47,16 +48,34 @@ class PostController extends Controller implements HasMiddleware
      */
     public function store(Request $request)
     {
-        // dd(Auth::user());
+        
+
+       
+
+        // dd('ok');
         // validate
-        $fields = $request->validate([
+        $request->validate([
             'title'=>['required','max:255'],
-            'body'=>['required']
+            'body'=>['required'],
+            'image'=>['nullable','file','max:2000','mimes:png,jpg,webp']
         ]);
+
+        $path = null;
+        // store image if it exists
+        if ($request->hasFile('image')) {
+            $path = Storage::disk('public')->put('posts_images', $request->image);
+
+        }
+        
+
         // create
         // Post::create([$fields]);
         // ignore the red-flag
-        Auth::user()->posts()->create($fields);
+        Auth::user()->posts()->create([
+            'title'=>$request->title,
+            'body'=>$request->body,
+            'image'=>$path,
+        ]);
 
         // redirect to dashboard
         return back()->with('success','Your post was created...');
@@ -91,14 +110,33 @@ class PostController extends Controller implements HasMiddleware
         // dd(Auth::user());
         // validate
 
-        $fields = $request->validate([
+        $request->validate([
             'title'=>['required','max:255'],
-            'body'=>['required']
+            'body'=>['required'],
+            'image'=>['nullable','file','max:2000','mimes:png,jpg,webp']
         ]);
+
+
+        $path = $post->image ?? null;
+        // store image if it exists
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('public')->delete( $post->image);
+            }
+            $path = Storage::disk('public')->put('posts_images', $request->image);
+
+        }
+
         // update the post
        
         // ignore the red-flag
-        $post->update($fields);
+        $post->update(
+            [
+                'title'=>$request->title,
+                'body'=>$request->body,
+                'image'=>$path,
+            ]
+        );
 
         // redirect to dashboard
         return redirect()->route('dashboard')->with('success','Your post was updated...');
@@ -109,6 +147,12 @@ class PostController extends Controller implements HasMiddleware
      */
     public function destroy(Post $post)
     {
+         // store image if it exists
+         if ($post->image) {
+            Storage::disk('public')->delete( $post->image);
+
+        }
+
         // applying policies to edit
         Gate::authorize('modify',$post);
 

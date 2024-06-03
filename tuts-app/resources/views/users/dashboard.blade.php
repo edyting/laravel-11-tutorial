@@ -21,7 +21,7 @@
         
 {{-- creating a post --}}
         <div class="bg-white p-4 rounded-lg">
-            <form action="{{route('posts.store')}}" method="POST">
+            <form action="{{route('posts.store')}}" method="POST" enctype="multipart/form-data" >
                 @csrf
                 {{-- Post title --}}
                 <div class="flex  flex-col">
@@ -46,6 +46,15 @@
                         @enderror
                 </div>
                 
+                {{-- post image --}}
+                <div class=" my-4">
+                    <label for="image">Upload cover photo</label>
+                    <input type="file" name="image" id="image">
+
+                    @error('image')
+                           <p class="text-sm text-red-300"> {{$message}} !</p>
+                        @enderror
+                </div>
                  {{-- submit button --}}
              <button class="bg-blue-900 w-full my-4 py-2 rounded-lg text-white">Create</button>
             </form>

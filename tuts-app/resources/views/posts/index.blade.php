@@ -17,6 +17,9 @@
     <h1 class="text-3xl font-bold capitalize">Latest posts</h1>
     {{-- {{$posts}}--}}
 
+    {{-- showing the images --}}
+    {{-- <img src="{{asset('storage/posts_images/bKFcVGPfMUyB2UQLGNnf51okDrkj3EECZFpfvKia.jpg')}}" alt=""> --}}
+
    <div class="grid  grid-cols-2 gap-6">
     @foreach ($posts as $post)
     <x-postCard :post="$post"/>

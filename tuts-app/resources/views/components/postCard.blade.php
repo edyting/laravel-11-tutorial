@@ -1,6 +1,16 @@
 @props(['post','full'=>false])
 
 <div class="bg-white rounded-lg p-6 mb-4">
+    {{-- cover photo --}}
+
+    <div >
+        @if ($post->image)
+        <img class=" w-full h-[15rem] object-cover rounded-md" src="{{asset('storage/' . $post->image)}}" alt="">
+        @else
+        <img class=" w-full h-[15rem] object-cover rounded-md" src="{{asset('storage/posts_images/uHExmQGrYdwz5H14FIHX3IL6cLdcFWym7dBlhOAI.jpg')}}" alt="">
+        @endif
+    </div>
+
     {{-- title --}}
     <h2 class="font-bold text-2xl">{{$post->title}}</h2>
     {{-- author and date --}}
@@ -25,3 +35,5 @@
         {{$slot}}
     </div>
 </div>
+
+
