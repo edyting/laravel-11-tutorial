@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Mail\WelcomeMail;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller implements HasMiddleware
@@ -28,6 +29,8 @@ class PostController extends Controller implements HasMiddleware
     {
         // $posts = Post::orderBy('created_at','desc')->get();
 
+
+       
         // same as above
         $posts = Post::latest()->paginate(5);
         
@@ -57,7 +60,7 @@ class PostController extends Controller implements HasMiddleware
         $request->validate([
             'title'=>['required','max:255'],
             'body'=>['required'],
-            'image'=>['nullable','file','max:2000','mimes:png,jpg,webp']
+            'image'=>['nullable','file','max:10000','mimes:png,jpg,webp,svg']
         ]);
 
         $path = null;
@@ -71,11 +74,16 @@ class PostController extends Controller implements HasMiddleware
         // create
         // Post::create([$fields]);
         // ignore the red-flag
-        Auth::user()->posts()->create([
+        
+        $post=Auth::user()->posts()->create([
             'title'=>$request->title,
             'body'=>$request->body,
             'image'=>$path,
         ]);
+
+         // sending mail
+
+         Mail::to('dankyiemmanuel0@gmail.com')->send(new WelcomeMail(Auth::user(),$post));
 
         // redirect to dashboard
         return back()->with('success','Your post was created...');
